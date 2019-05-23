@@ -1,12 +1,19 @@
-# keras-yolo3
+# YOLOv3 digits
 
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
+A YOLOv3 based digits detector. Based on the amazing work of [qqwweee](https://github.com/qqwweee/keras-yolo3)
+
+
+
+## Dataset
+
+The [Street View House Numbers (SVHN)](http://ufldl.stanford.edu/housenumbers/) dataset is used for transfer learning.  
+
+![SVHN example images](http://ufldl.stanford.edu/housenumbers/examples_new.png)
+
+From the website we see that there are : "*73257 digits for training, 26032 digits for testing, and 531131 additional, somewhat less difficult samples, to use as extra training data*"
 
 ## Introduction
-
-A Keras implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YAD2K](https://github.com/allanzelener/YAD2K).
-
-
+ 
 ---
 
 ## Quick Start
@@ -45,6 +52,7 @@ optional arguments:
   --gpu_num GPU_NUM  Number of GPU to use, default 1
   --image            Image detection mode, will ignore all positional arguments
 ```
+
 ---
 
 4. MultiGPU usage: use `--gpu_num N` to use N GPUs. It is passed to the [Keras multi_gpu_model()](https://keras.io/utils/#multi_gpu_model).
