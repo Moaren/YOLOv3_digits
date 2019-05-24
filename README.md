@@ -13,6 +13,13 @@ From the website we see that there are : "*73257 digits for training, 26032 digi
 
 Annotations PASCAL format: https://github.com/penny4860/svhn-voc-annotation-format
 
+Annotations PASCAL format AND txt format (ready for training) http://download939.mediafire.com/ouwinissq9ng/ydg1i5qbm27mdax/annotations.tar.xz
+
+    cd <path_to_repo_root>/data/
+    wget http://download939.mediafire.com/ouwinissq9ng/ydg1i5qbm27mdax/annotations.tar.xz
+    tar -xf annotations.tar.xz
+    rm annotations.tar.xz
+
 ## Introduction
  
 ---
@@ -90,7 +97,7 @@ If you want to use original pretrained weights for YOLOv3:
 
 ## TODO
 
-- [] Convert .mat file to txt for YOLO
+- [X] Convert .mat file to txt for YOLO
 - [] Transfer learning on digits
 - [] Add mAP to the projects for evaluation
 - [] Prune the network
