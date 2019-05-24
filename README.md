@@ -3,7 +3,6 @@
 A YOLOv3 based digits detector. Based on the amazing work of [qqwweee](https://github.com/qqwweee/keras-yolo3)
 
 
-
 ## Dataset
 
 The [Street View House Numbers (SVHN)](http://ufldl.stanford.edu/housenumbers/) dataset is used for transfer learning.  
@@ -11,6 +10,8 @@ The [Street View House Numbers (SVHN)](http://ufldl.stanford.edu/housenumbers/) 
 ![SVHN example images](http://ufldl.stanford.edu/housenumbers/examples_new.png)
 
 From the website we see that there are : "*73257 digits for training, 26032 digits for testing, and 531131 additional, somewhat less difficult samples, to use as extra training data*"
+
+Annotations PASCAL format: https://github.com/penny4860/svhn-voc-annotation-format
 
 ## Introduction
  
@@ -87,21 +88,11 @@ If you want to use original pretrained weights for YOLOv3:
 
 ---
 
-## Some issues to know
+## TODO
 
-1. The test environment is
-    - Python 3.5.2
-    - Keras 2.1.5
-    - tensorflow 1.6.0
-
-2. Default anchors are used. If you use your own anchors, probably some changes are needed.
-
-3. The inference result is not totally the same as Darknet but the difference is small.
-
-4. The speed is slower than Darknet. Replacing PIL with opencv may help a little.
-
-5. Always load pretrained weights and freeze layers in the first stage of training. Or try Darknet training. It's OK if there is a mismatch warning.
-
-6. The training strategy is for reference only. Adjust it according to your dataset and your goal. And add further strategy if needed.
-
-7. For speeding up the training process with frozen layers train_bottleneck.py can be used. It will compute the bottleneck features of the frozen model first and then only trains the last layers. This makes training on CPU possible in a reasonable time. See [this](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html) for more information on bottleneck features.
+- [] Convert .mat file to txt for YOLO
+- [] Transfer learning on digits
+- [] Add mAP to the projects for evaluation
+- [] Prune the network
+- [] Quantize the network
+- [] Convert to tf
