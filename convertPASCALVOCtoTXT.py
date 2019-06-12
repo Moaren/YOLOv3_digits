@@ -23,25 +23,35 @@ def convertVOCtoTXT(handler):
         '9': '9',
     }
 
-    line = xml_data.find('filename').text 
+    line_training = xml_data.find('filename').text 
+    line_mAP = ''
     
     for obj in xml_data.find_all('object'):
-        line += ' ' + \
+        line_training += ' ' + \
         obj.find('xmin').text + ',' + \
         obj.find('ymin').text + ',' + \
         obj.find('xmax').text + ',' + \
         obj.find('ymax').text + ',' + \
         classCorrespondance[obj.find('name').text]
+
+        line_mAP += classCorrespondance[obj.find('name').text] + ' ' + \
+            obj.find('xmin').text + ' ' + \
+            obj.find('ymin').text + ' ' + \
+            obj.find('xmax').text + ' ' + \
+            obj.find('ymax').text + '\n'
     
-    line += '\n'
+    line_training += '\n'
     
-    return line
+    return line_training, line_mAP
 
 def main(args):
     print('[INFO] Converting VOC style to YOLO txt')
     
     # Iterate thourgh the directories
     for subdir, _, files in os.walk(args.pascal_path):
+        # Skip subdir (avoid TXT subdir)
+        if(subdir != args.pascal_path):
+            continue
         print('[INFO] Working on: ' + str(subdir))
         print(os.pardir)
         txt = ''
@@ -59,8 +69,12 @@ def main(args):
                     sys.exit(0)
                     
                 # Convert files
-                line = convertVOCtoTXT(handler)
-                txt += line
+                line_training, line_mAP= convertVOCtoTXT(handler)
+                txt += line_training
+
+                # Write res to a file (for later use in mAP calculation)
+                with open(os.path.join(args.pascal_path, 'TXT', _file.replace('xml', 'txt')), 'w') as f:
+                    f.write(line_mAP)
 
         with open(subdir + '_' + args.output_name, 'w') as f:
             f.write(txt)
