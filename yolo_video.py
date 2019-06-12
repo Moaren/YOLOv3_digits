@@ -5,9 +5,12 @@ import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
 
+import mAP
+
 def evaluate(yolo, data_path):
 
     whole_process_start = time.time()
+    
     try:
         for subdir, _, files in os.walk(data_path):
             print('[INFO] Working on: ' + str(subdir))
@@ -53,6 +56,9 @@ def evaluate(yolo, data_path):
     end = time.time() - whole_process_start
     with open('data/eval_res/timing.txt', 'w') as f:
         f.write(str(end))
+    
+    ## mAP eval
+    mAP.calculate('data/annotations/test/TXT/', 'data/eval_res/', 'data/eval_res/results/')
 
 def detect_img(yolo):
     while True:
