@@ -1,7 +1,58 @@
+import time
+import os
 import sys
 import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
+
+def evaluate(yolo, data_path):
+
+    whole_process_start = time.time()
+    try:
+        for subdir, _, files in os.walk(data_path):
+            print('[INFO] Working on: ' + str(subdir))
+            files.sort()
+            for _file in files:
+                if str(_file).lower().endswith(('.png', '.jpg', '.jpeg', '.jfiff', '.tiff', '.bmp')):
+                    print('>>> File: ' + str(_file))
+                    # Checks if there's a corresponding annotation file
+                    try:
+                        # load image 
+                        image = Image.open(os.path.join(subdir, _file))
+
+                    except Exception as e:
+                        print("Error reading file: " + str(_file))
+                        # Break the current iteration
+                        continue
+
+                    # inferences
+                    r_image, inferences = yolo.detect_image(image)
+                    #print(inferences)
+                    #r_image.show()
+
+                    # write results to file
+                    with open('data/eval_res/' + _file.replace('jpg', 'txt')
+                        .replace('jpeg', 'txt')
+                        .replace('png', 'txt')
+                        .replace('jfiff', 'txt')
+                        .replace('tiff', 'txt')
+                        .replace('bmp', 'txt'), 'w') as f:
+                        # inferences is empty, but we need to create an empty file
+                        if not inferences:
+                            f.write('')
+                        else:
+                            for inference in inferences:
+                                strToWrite = str(inference['class']) + ' ' + str(inference['score']) + ' ' + str(inference['x1']) + \
+                                    ' ' + str(inference['y1']) + ' ' + \
+                                    str(inference['x2']) + ' ' + str(inference['y2']) + '\n'
+                                f.write(strToWrite)
+    except Exception as e:
+        print(e)
+
+    yolo.close_session()
+    end = time.time() - whole_process_start
+    with open('data/eval_res/timing.txt', 'w') as f:
+        f.write(str(end))
 
 def detect_img(yolo):
     while True:
@@ -48,6 +99,16 @@ if __name__ == '__main__':
         '--image', default=False, action="store_true",
         help='Image detection mode, will ignore all positional arguments'
     )
+
+    parser.add_argument(
+        '--eval', default=False, action="store_true",
+        help='Evaluation mode, running on eval_path argument'
+    )
+
+    parser.add_argument(
+        '--eval_path', type=str, default="data/examples/",
+        help='Path to evaluation files'
+    )
     '''
     Command line positional arguments -- for video detection mode
     '''
@@ -67,10 +128,13 @@ if __name__ == '__main__':
         """
         Image detection mode, disregard any remaining command line arguments
         """
-        print("Image detection mode")
-        if "input" in FLAGS:
-            print(" Ignoring remaining command line arguments: " + FLAGS.input + "," + FLAGS.output)
-        detect_img(YOLO(**vars(FLAGS)))
+        if FLAGS.eval:
+            evaluate(YOLO(**vars(FLAGS)), FLAGS.eval_path)
+        else:
+            print("Image detection mode")
+            if "input" in FLAGS:
+                print(" Ignoring remaining command line arguments: " + FLAGS.input + "," + FLAGS.output)
+            detect_img(YOLO(**vars(FLAGS)))
     elif "input" in FLAGS:
         detect_video(YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
     else:
