@@ -20,12 +20,12 @@ from keras.utils import multi_gpu_model
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'model_data/yolo.h5',
+        "model_path": 'model_data/trained_weights_final.h5',
         "anchors_path": 'model_data/yolo_anchors.txt',
-        "classes_path": 'model_data/coco_classes.txt',
+        "classes_path": 'model_data/digits_class.txt',
         "score" : 0.3,
         "iou" : 0.45,
-        "model_image_size" : (416, 416),
+        "model_image_size" : (128, 128),
         "gpu_num" : 1,
     }
 
@@ -130,6 +130,8 @@ class YOLO(object):
                     size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
         thickness = (image.size[0] + image.size[1]) // 300
 
+        inferences = []
+
         for i, c in reversed(list(enumerate(out_classes))):
             predicted_class = self.class_names[c]
             box = out_boxes[i]
@@ -145,6 +147,8 @@ class YOLO(object):
             bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
             right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
             print(label, (left, top), (right, bottom))
+
+            inferences.append({'class':predicted_class, 'score':score, 'x1':left, 'y1':top, 'x2':right, 'y2':bottom})
 
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
@@ -164,7 +168,7 @@ class YOLO(object):
 
         end = timer()
         print(end - start)
-        return image
+        return image, inferences
 
     def close_session(self):
         self.sess.close()
