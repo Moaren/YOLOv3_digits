@@ -2,6 +2,7 @@
 
 A YOLOv3 based digits detector. Based on the amazing work of [qqwweee](https://github.com/qqwweee/keras-yolo3)
 
+**! THIS IS A WORK IN PROGRESS, MODEL AVAILABLE SOON**
 
 ## Dataset
 
